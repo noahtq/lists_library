@@ -5,7 +5,7 @@
 #include "linked_list.h"
 
 Lists::Node::Node(Data new_data)
-    : data(new_data), next(nullptr), prev(nullptr) {}
+    :data(new_data), next(nullptr), prev(nullptr) {}
 
 void Lists::LinkedList::appendNode(Data new_data) {
     Node* new_node = new Node(new_data);
@@ -32,4 +32,27 @@ void Lists::LinkedList::emptyList() {
     tail = nullptr;
     sz = 0;
 }
+
+Lists::LinkedList::LinkedList(const LinkedList &list)
+    :sz(list.size()) {
+    Node* walker = list.get_head();
+    while (walker != nullptr) {
+        this->appendNode(walker->get_data());
+        walker = walker->get_next();
+    }
+}
+
+
+//Copy operator for LinkedList class
+//Make copies of all nodes in linked list and add those copies to the new list
+Lists::LinkedList& Lists::LinkedList::operator=(const LinkedList& list) {
+    Node* walker = list.get_head();
+    while (walker != nullptr) {
+        this->appendNode(walker->get_data());
+        walker = walker->get_next();
+    }
+    this->sz = list.size();
+    return *this;
+}
+
 

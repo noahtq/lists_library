@@ -43,6 +43,10 @@ namespace Lists {
         //Constructors
         LinkedList() = default;
 
+        //Copy constructor and operator
+        LinkedList(const LinkedList& list);
+        LinkedList& operator=(const LinkedList& list);
+
         //Getters and setters
         [[nodiscard]] int size() const {return sz;}
         [[nodiscard]] Node* get_head() const {return head;}
