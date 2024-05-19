@@ -15,6 +15,9 @@ namespace Lists {
         std::string nationality;
     };
 
+    bool operator==(const Data& a, const Data& b);
+    bool operator!=(const Data& a, const Data& b);
+
     class Node {
     private:
         Data data;
@@ -33,6 +36,9 @@ namespace Lists {
         void set_prev(Node* new_prev) {prev = new_prev;}
         void set_data(Data new_data) {data = new_data;}
     };
+
+    inline bool operator==(const Node& a, const Node& b) {return a.get_data() == b.get_data();}
+    inline bool operator!=(const Node& a, const Node& b) {return a.get_data() != b.get_data();}
 
     class LinkedList {
     private:
@@ -63,6 +69,12 @@ namespace Lists {
         ~LinkedList() {emptyList();}
     };
 
+    bool operator==(const LinkedList& a, const LinkedList& b);
+    bool operator!=(const LinkedList& a, const LinkedList& b);
+    inline bool operator<(const LinkedList& a, const LinkedList& b) {return a.size() < b.size();}
+    inline bool operator<=(const LinkedList& a, const LinkedList& b) {return a.size() <= b.size();}
+    inline bool operator>(const LinkedList& a, const LinkedList& b) {return a.size() > b.size();}
+    inline bool operator>=(const LinkedList& a, const LinkedList& b) {return a.size() >= b.size();}
 
 }
 

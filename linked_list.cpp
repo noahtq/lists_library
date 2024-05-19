@@ -61,3 +61,48 @@ Lists::LinkedList::LinkedList(LinkedList &&list) noexcept
     list.head = nullptr;
     list.tail = nullptr;
 }
+
+bool Lists::operator==(const Data& a, const Data& b) {
+    if (a.ranking != b.ranking) return false;
+    if (a.first_name != b.first_name) return false;
+    if (a.last_name != b.last_name) return false;
+    if (a.nationality != b.nationality) return false;
+    return true;
+}
+
+bool Lists::operator!=(const Data& a, const Data& b) {
+    if (a.ranking != b.ranking) return true;
+    if (a.first_name != b.first_name) return true;
+    if (a.last_name != b.last_name) return true;
+    if (a.nationality != b.nationality) return true;
+    return false;
+}
+
+bool Lists::operator==(const LinkedList& a, const LinkedList& b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    Node* a_walker = a.get_head();
+    Node* b_walker = b.get_head();
+    while (a_walker != nullptr && b_walker != nullptr) {
+        if (!(*a_walker == *b_walker)) return false;
+        a_walker = a_walker->get_next();
+        b_walker = b_walker->get_next();
+    }
+    return true;
+}
+
+bool Lists::operator!=(const LinkedList& a, const LinkedList& b) {
+    if (a.size() != b.size()) {
+        return true;
+    }
+    Node* a_walker = a.get_head();
+    Node* b_walker = b.get_head();
+    while (a_walker != nullptr && b_walker != nullptr) {
+        if (!(*a_walker == *b_walker)) return true;
+        a_walker = a_walker->get_next();
+        b_walker = b_walker->get_next();
+    }
+    return false;
+}
+
