@@ -10,19 +10,13 @@ int main() {
     Data fleetwood = {11, "Tommy", "Fleetwood", "Englist"};
     Data rahm = {3, "John", "Rahm", "Spanish"};
 
-    LinkedList golfer_copy;
-    {
-        LinkedList golfers;
-        golfers.appendNode(sheffler);
-        golfers.appendNode(fleetwood);
-        golfers.appendNode(rahm);
+    LinkedList golfers;
+    golfers.appendNode(sheffler);
+    golfers.appendNode(fleetwood);
+    golfers.appendNode(rahm);
 
-        golfer_copy = golfers;
-
-        LinkedList golfer_copy2(golfers);
-        int a = 3;
-        ;
-    }
+    LinkedList golfers2 = std::move(golfers);
+    LinkedList golfer_copy = golfers2;
 
 
     return 0;

@@ -47,6 +47,9 @@ namespace Lists {
         LinkedList(const LinkedList& list);
         LinkedList& operator=(const LinkedList& list);
 
+        //Move Constructor
+        LinkedList(LinkedList&& list) noexcept;
+
         //Getters and setters
         [[nodiscard]] int size() const {return sz;}
         [[nodiscard]] Node* get_head() const {return head;}

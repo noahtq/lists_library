@@ -33,6 +33,7 @@ void Lists::LinkedList::emptyList() {
     sz = 0;
 }
 
+//Copy constructor
 Lists::LinkedList::LinkedList(const LinkedList &list)
     :sz(list.size()) {
     Node* walker = list.get_head();
@@ -42,10 +43,10 @@ Lists::LinkedList::LinkedList(const LinkedList &list)
     }
 }
 
-
 //Copy operator for LinkedList class
 //Make copies of all nodes in linked list and add those copies to the new list
 Lists::LinkedList& Lists::LinkedList::operator=(const LinkedList& list) {
+    //TODO: once equality operators have been implemented, update this function to check and make sure that no operation is performed if we're assigning the list to itself
     Node* walker = list.get_head();
     while (walker != nullptr) {
         this->appendNode(walker->get_data());
@@ -55,4 +56,10 @@ Lists::LinkedList& Lists::LinkedList::operator=(const LinkedList& list) {
     return *this;
 }
 
-
+//Move constructor
+Lists::LinkedList::LinkedList(LinkedList &&list) noexcept
+:head(list.get_head()), tail(list.get_tail()), sz(list.size()) {
+    list.sz = 0;
+    list.head = nullptr;
+    list.tail = nullptr;
+}
