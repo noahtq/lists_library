@@ -34,8 +34,7 @@ void Lists::LinkedList::emptyList() {
 }
 
 //Copy constructor
-Lists::LinkedList::LinkedList(const LinkedList &list)
-    :sz(list.size()) {
+Lists::LinkedList::LinkedList(const LinkedList &list) {
     Node* walker = list.get_head();
     while (walker != nullptr) {
         this->appendNode(walker->get_data());
@@ -52,7 +51,6 @@ Lists::LinkedList& Lists::LinkedList::operator=(const LinkedList& list) {
         this->appendNode(walker->get_data());
         walker = walker->get_next();
     }
-    this->sz = list.size();
     return *this;
 }
 

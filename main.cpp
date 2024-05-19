@@ -16,8 +16,10 @@ int main() {
     golfers.appendNode(rahm);
 
     LinkedList golfers2 = std::move(golfers);
-    LinkedList golfer_copy = golfers2;
+    LinkedList golfer_copy;
+    golfer_copy = golfers2;
 
+    std::cout << golfer_copy.size() << std::endl;
 
     return 0;
 }
