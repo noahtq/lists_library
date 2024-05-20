@@ -1,9 +1,36 @@
 #include <iostream>
+#include <vector>
 #include "linked_list.h"
 
 using namespace Lists;
 
+template<typename T, int i>
+class Vector {
+private:
+    T arr[i];
+    T* initialized = arr;
+public:
+    Vector() = default;
+    void pushBack(T elem) {
+        if (initialized < arr + i) {
+            *initialized = elem;
+            ++initialized;
+        } else {
+            throw std::out_of_range("Vector full");
+        }
+    }
+};
+
 int main() {
+    Vector<double, 5> dubs;
+    dubs.pushBack(3.2);
+    dubs.pushBack(2.1);
+
+    Vector<char, 2> chars;
+    chars.pushBack('A');
+    chars.pushBack('B');
+
+    chars.pushBack('C');
 
 
     Data sheffler = {1, "Scottie", "Sheffler", "American"};
