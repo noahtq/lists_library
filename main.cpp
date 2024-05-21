@@ -60,8 +60,12 @@ int main() {
     LinkedList<int> int_list4;
     int_list4 = int_list;
 
-    LinkedList<int> int_list5;
+    LinkedList<int> int_list5 = std::move(int_list);
 
+    LinkedList<Golfer> golfers2 = std::move(list);
+    LinkedList<Golfer> golfers3 = golfers2;
+    LinkedList<Golfer> golfers4;
+    golfers4 = golfers2;
 
     return 0;
 }
