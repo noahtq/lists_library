@@ -78,11 +78,12 @@ namespace Lists {
     //Make copies of all nodes in linked list and add those copies to the new list
     template <typename T>
     LinkedList<T>& LinkedList<T>::operator=(const LinkedList& list) {
-        //TODO: once equality operators have been implemented, update this function to check and make sure that no operation is performed if we're assigning the list to itself
-        Node<T>* walker = list.get_head();
-        while (walker != nullptr) {
-            this->appendNode(walker->get_data());
-            walker = walker->get_next();
+        if (&list != this) {
+            Node<T>* walker = list.get_head();
+            while (walker != nullptr) {
+                this->appendNode(walker->get_data());
+                walker = walker->get_next();
+            }
         }
         return *this;
     }

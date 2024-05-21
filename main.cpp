@@ -67,5 +67,7 @@ int main() {
     LinkedList<Golfer> golfers4;
     golfers4 = golfers2;
 
+    golfers4 = golfers4;
+
     return 0;
 }
