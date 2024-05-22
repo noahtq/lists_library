@@ -29,45 +29,38 @@ bool operator!=(const Golfer& a, const Golfer& b) {
 
 int main() {
 
-    Golfer sheffler = {1, "Scottie", "Sheffler", "American"};
-    Golfer fleetwood = {11, "Tommy", "Fleetwood", "Englist"};
-    Golfer rahm = {3, "John", "Rahm", "Spanish"};
+    try {
+        Golfer sheffler = {1, "Scottie", "Sheffler", "American"};
+        Golfer fleetwood = {11, "Tommy", "Fleetwood", "Englist"};
+        Golfer rahm = {3, "John", "Rahm", "Spanish"};
 
-    LinkedList<Golfer> list;
-    list.appendNode(sheffler);
-    list.appendNode(fleetwood);
-    list.appendNode(rahm);
+        LinkedList<Golfer> list;
+        list.appendNode(sheffler);
+        list.appendNode(fleetwood);
+        list.appendNode(rahm);
 
-    LinkedList<Golfer> list2;
-    list2.appendNode(sheffler);
-    list2.appendNode(rahm);
+        Node<Golfer>* n = list.get_head();
 
-    std::cout << (list == list2) << std::endl;
+        LinkedList<Golfer> c_list;
+        // c_list.insertNode(n, rahm);
+        c_list.insertNode(rahm);
 
-    LinkedList<int> int_list;
-    int_list.appendNode(2);
-    int_list.appendNode(3);
-    int_list.appendNode(4);
+        LinkedList<int> int_list;
+        int_list.appendNode(2);
+        int_list.appendNode(1);
+        int_list.appendNode(5);
 
-    LinkedList<int> int_list2;
-    int_list2.appendNode(2);
-    int_list2.appendNode(3);
-    int_list2.appendNode(3);
+        Node<int>* target = int_list.findNode(5);
 
-    std::cout << (int_list == int_list2) << std::endl;
+        int_list.insertNode(target, 7);
+        int_list.insertNodeBeginning(8);
 
-    LinkedList<int> int_list3 = int_list;
-    LinkedList<int> int_list4;
-    int_list4 = int_list;
+        std::cout << int_list << std::endl;
 
-    LinkedList<int> int_list5 = std::move(int_list);
-
-    LinkedList<Golfer> golfers2 = std::move(list);
-    LinkedList<Golfer> golfers3 = golfers2;
-    LinkedList<Golfer> golfers4;
-    golfers4 = golfers2;
-
-    golfers4 = golfers4;
+        int x = 5;
+    } catch (std::out_of_range& e) {
+        std::cerr << e.what() << std::endl;
+    }
 
     return 0;
 }
