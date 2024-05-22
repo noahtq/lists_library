@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "linked_list.h"
+#include "lists.h"
 
 using namespace Lists;
 
