@@ -19,6 +19,7 @@ namespace Lists {
     public:
         //Constructors
         explicit Node(T new_data);
+        Node();
 
         //Getters and setters
         [[nodiscard]] Node* get_next() const {return next;}
@@ -27,7 +28,7 @@ namespace Lists {
 
         void set_next(Node* new_next) {next = new_next;}
         void set_prev(Node* new_prev) {prev = new_prev;}
-        void set_data(T& new_data) {data = new_data;}
+        void set_data(T new_data) {data = new_data;}
     };
 
     template<typename T>
@@ -79,6 +80,10 @@ namespace Lists {
     Node<T>::Node(T new_data)
     :data(new_data), next(nullptr), prev(nullptr) {}
 
+    template<typename T>
+    Node<T>::Node()
+    :data(NULL), next(nullptr), prev(nullptr) {}
+
     //Copy constructor
     template <typename T>
     LinkedList<T>::LinkedList(const LinkedList &list) {
@@ -94,6 +99,7 @@ namespace Lists {
     template <typename T>
     LinkedList<T>& LinkedList<T>::operator=(const LinkedList& list) {
         if (&list != this) {
+            this->emptyList();
             Node<T>* walker = list.get_head();
             while (walker != nullptr) {
                 this->appendNode(walker->get_data());
@@ -116,7 +122,7 @@ namespace Lists {
     bool LinkedList<T>::nodeInList(const Node<T>* target_node) {
         Node<T>* walker = head;
         while (walker != nullptr) {
-            if (walker == target_node) {
+            if (walker->get_data() == target_node->get_data()) {
                 return true;
             }
             walker = walker->get_next();

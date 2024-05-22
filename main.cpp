@@ -56,6 +56,7 @@ int main() {
         int_list.insertNodeBeginning(8);
 
         std::cout << int_list << std::endl;
+        std::cout << list << std::endl;
 
         int x = 5;
     } catch (std::out_of_range& e) {

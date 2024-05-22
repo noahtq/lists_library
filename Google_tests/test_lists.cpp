@@ -4,3 +4,358 @@
 
 #include "gtest/gtest.h"
 #include "../lists.h"
+
+struct Golfer {
+    int ranking;
+    std::string first_name;
+    std::string last_name;
+    std::string nationality;
+};
+
+bool operator==(const Golfer& a, const Golfer& b) {
+    if (a.ranking != b.ranking) return false;
+    if (a.first_name != b.first_name) return false;
+    if (a.last_name != b.last_name) return false;
+    if (a.nationality != b.nationality) return false;
+    return true;
+}
+
+bool operator!=(const Golfer& a, const Golfer& b) {
+    if (a.ranking != b.ranking) return true;
+    if (a.first_name != b.first_name) return true;
+    if (a.last_name != b.last_name) return true;
+    if (a.nationality != b.nationality) return true;
+    return false;
+}
+
+class LinkedListTest: public testing::Test {
+protected:
+    void SetUp() override {
+        //List 1
+        int_list.appendNode(2);
+        int_list.appendNode(1);
+        int_list.appendNode(5);
+
+        //Same as list 1
+        int_list2.appendNode(2);
+        int_list2.appendNode(1);
+        int_list2.appendNode(5);
+
+        //Shorter than list 1
+        int_list3.appendNode(2);
+        int_list3.appendNode(1);
+
+        //Same length as list 1 but different elements
+        int_list4.appendNode(2);
+        int_list4.appendNode(6);
+        int_list4.appendNode(5);
+
+        //List 1
+        golfer_list.appendNode(sheffler);
+        golfer_list.appendNode(fleetwood);
+        golfer_list.appendNode(rahm);
+
+        //Same as list 1
+        golfer_list2.appendNode(sheffler);
+        golfer_list2.appendNode(fleetwood);
+        golfer_list2.appendNode(rahm);
+
+        //Shorter than list 1
+        golfer_list3.appendNode(sheffler);
+        golfer_list3.appendNode(rahm);
+
+        //Same length as list 1 but different elements
+        golfer_list4.appendNode(sheffler);
+        golfer_list4.appendNode(rahm);
+        golfer_list4.appendNode(rahm);
+    }
+
+    Lists::LinkedList<int> int_list;
+    Lists::LinkedList<int> int_list2;
+    Lists::LinkedList<int> int_list3;
+    Lists::LinkedList<int> int_list4;
+
+    Lists::LinkedList<Golfer> golfer_list;
+    Lists::LinkedList<Golfer> golfer_list2;
+    Lists::LinkedList<Golfer> golfer_list3;
+    Lists::LinkedList<Golfer> golfer_list4;
+
+    Lists::LinkedList<double> empty_list;
+
+    Golfer sheffler = {1, "Scottie", "Sheffler", "American"};
+    Golfer fleetwood = {11, "Tommy", "Fleetwood", "Englist"};
+    Golfer rahm = {3, "John", "Rahm", "Spanish"};
+    Golfer woods = {100, "Tiger", "Woods", "American"};
+};
+
+/*
+Test the default constructor for linkedlist template, also tests getter
+methods as those are needed to get the values of the instance variables
+*/
+TEST_F(LinkedListTest, LinkedListDefaultConstructorTestAndGetterTest) {
+    const Lists::LinkedList<double> double_list;
+    ASSERT_EQ(double_list.get_head(), nullptr);
+    ASSERT_EQ(double_list.get_tail(), nullptr);
+    ASSERT_EQ(double_list.size(), 0);
+}
+
+/*
+Test the LinkedList template equal and not equal operators
+The operators should return true if the lists are the same length
+ and all nodes in the same positions are equal.
+The not equal operator should be the logical opposite.
+*/
+TEST_F(LinkedListTest, LinkedListTestEqualityOperators) {
+    //Check equal lists are equal
+    ASSERT_TRUE(int_list == int_list2);
+    ASSERT_TRUE(golfer_list == golfer_list2);
+
+    //Check a shorter list with same elements return false
+    ASSERT_FALSE(int_list == int_list3);
+    ASSERT_FALSE(golfer_list == golfer_list3);
+
+    //Check same length list with different elements returns false
+    ASSERT_FALSE(int_list == int_list4);
+    ASSERT_FALSE(golfer_list == golfer_list4);
+}
+
+/*
+Test comparison operators for linked list
+Should only be comparing size of the list (i.e number of nodes)
+and not be concerned with what is in the nodes or the type
+*/
+TEST_F(LinkedListTest, LinkedListTestComparisonOperators) {
+    ASSERT_TRUE(int_list > int_list3);
+    ASSERT_FALSE(int_list3 > int_list);
+
+    ASSERT_TRUE(int_list >= int_list3);
+    ASSERT_FALSE(int_list3 >= int_list);
+    ASSERT_TRUE(int_list >= int_list4);
+
+    ASSERT_FALSE(int_list < int_list3);
+    ASSERT_TRUE(int_list3 < int_list);
+
+    ASSERT_FALSE(int_list <= int_list3);
+    ASSERT_TRUE(int_list3 <= int_list);
+    ASSERT_TRUE(int_list <= int_list4);
+}
+
+/*
+Test the copy constructor
+We have already established an invariant with the above
+equality tests that the equality operators work
+therefore we can use those to ensure the two lists are
+equal or not equal.
+To make sure we are copying and not referencing or moving
+we also check that the memory addresses of some nodes
+aren't equal.
+*/
+TEST_F(LinkedListTest, LinkedListTestCopyConstructor) {
+    Lists::LinkedList<int> int_copy = int_list;
+    Lists::LinkedList<Golfer> golfer_copy = golfer_list;
+
+    ASSERT_TRUE(int_copy == int_list);
+    ASSERT_TRUE(golfer_copy == golfer_list);
+
+    //Compare addresses of head nodes and make sure they are not equal
+    ASSERT_NE(int_copy.get_head(), int_list.get_head());
+    ASSERT_NE(golfer_copy.get_head(), golfer_list.get_head());
+ }
+
+/*
+Test the copy operator
+Should behave in same way as copy constructor except it should
+also remove and overwrite nodes that were already in list
+being copied to.
+*/
+TEST_F(LinkedListTest, LinkedListTestCopyOperator) {
+    Lists::LinkedList<int> int_copy;
+    int_copy.appendNode(10);
+    int_copy = int_list;
+    Lists::LinkedList<Golfer> golfer_copy;
+    golfer_copy.appendNode(sheffler);
+    golfer_copy = golfer_list;
+
+    ASSERT_TRUE(int_copy == int_list);
+    ASSERT_TRUE(golfer_copy == golfer_list);
+
+    //Compare addresses of head nodes and make sure they are not equal
+    ASSERT_NE(int_copy.get_head(), int_list.get_head());
+    ASSERT_NE(golfer_copy.get_head(), golfer_list.get_head());
+}
+
+/*
+ Test move constructor
+ Should move all of the nodes to a new list in the same order.
+ The old list should be uninitialized (set to default).
+ The address of the nodes in the new list should match the old list
+ as nodes should be in the same memory location on the heap.
+ */
+TEST_F(LinkedListTest, LinkedListTestMoveConstructor) {
+    //Save addresses of head nodes to make sure they aren't changed when moved
+    auto int_head_addr = reinterpret_cast<uintptr_t>(int_list.get_head());
+    auto golfer_head_addr = reinterpret_cast<uintptr_t>(golfer_list.get_head());
+
+    //Make copies of lists so we can make sure the data in the lists
+    //are identical
+    const Lists::LinkedList<int> int_copy = int_list;
+    const Lists::LinkedList<Golfer> golfer_copy = golfer_list;
+
+    const Lists::LinkedList<int> int_move = std::move(int_list);
+    const Lists::LinkedList<Golfer> golfer_move = std::move(golfer_list);
+
+    ASSERT_TRUE(int_move == int_copy);
+    ASSERT_TRUE(golfer_move == golfer_copy);
+
+    ASSERT_EQ(int_list.get_head(), nullptr);
+    ASSERT_EQ(int_list.get_tail(), nullptr);
+    ASSERT_EQ(int_list.size(), 0);
+
+    ASSERT_EQ(reinterpret_cast<uintptr_t>(int_move.get_head()), int_head_addr);
+    ASSERT_EQ(reinterpret_cast<uintptr_t>(golfer_move.get_head()), golfer_head_addr);
+}
+
+/*
+Test the node in list method - argument is node pointer
+Should return true if there is a node in the list with the same data
+Otherwise return false
+*/
+TEST_F(LinkedListTest, LinkedListTestNodeInListMethod) {
+    Lists::Node<int> int_first(2);
+    Lists::Node<int>* int_first_p = &int_first;
+    Lists::Node<int> int_middle(1);
+    Lists::Node<int>* int_middle_p = &int_middle;
+    Lists::Node<int> int_last(5);
+    Lists::Node<int>* int_last_p = &int_last;
+    Lists::Node<int> int_not_in_list(10);
+    Lists::Node<int>* int_not_in_list_p = &int_not_in_list;
+
+    Lists::Node<Golfer> golfer_first(sheffler);
+    Lists::Node<Golfer>* golfer_first_p = &golfer_first;
+    Lists::Node<Golfer> golfer_middle(fleetwood);
+    Lists::Node<Golfer>* golfer_middle_p = &golfer_middle;
+    Lists::Node<Golfer> golfer_last(rahm);
+    Lists::Node<Golfer>* golfer_last_p = &golfer_last;
+    Lists::Node<Golfer> golfer_not_in_list(woods);
+    Lists::Node<Golfer>* golfer_not_in_list_p = &golfer_not_in_list;
+
+    ASSERT_TRUE(int_list.nodeInList(int_first_p));
+    ASSERT_TRUE(int_list.nodeInList(int_middle_p));
+    ASSERT_TRUE(int_list.nodeInList(int_last_p));
+    ASSERT_FALSE(int_list.nodeInList(int_not_in_list_p));
+
+    ASSERT_TRUE(golfer_list.nodeInList(golfer_first_p));
+    ASSERT_TRUE(golfer_list.nodeInList(golfer_middle_p));
+    ASSERT_TRUE(golfer_list.nodeInList(golfer_last_p));
+    ASSERT_FALSE(golfer_list.nodeInList(golfer_not_in_list_p));
+
+    //Test with an empty list
+    Lists::Node<double> d(5.5);
+    Lists::Node<double>* d_p = &d;
+
+    ASSERT_FALSE(empty_list.nodeInList(d_p));
+}
+
+//Test the insertion operator <<
+//TODO: Write this test
+
+/*
+Test find node method - find node by target data
+Should return a pointer to the first node in list with the target data
+Should return nullptr if no node with that data exists
+*/
+TEST_F(LinkedListTest, LinkedListTestFindNodeMethod) {
+    Lists::Node<int>* int_first = int_list.findNode(2);
+    const int first = int_first->get_data();
+    Lists::Node<int>* int_middle = int_list.findNode(1);
+    const int middle = int_middle->get_data();
+    Lists::Node<int>* int_last = int_list.findNode(5);
+    const int last = int_last->get_data();
+    Lists::Node<int>* int_not_in_list = int_list.findNode(-2);
+
+    Lists::Node<Golfer>* golfer_first = golfer_list.findNode(sheffler);
+    const std::string name_first = golfer_first->get_data().first_name;
+    Lists::Node<Golfer>* golfer_middle = golfer_list.findNode(fleetwood);
+    const std::string name_middle = golfer_middle->get_data().first_name;
+    Lists::Node<Golfer>* golfer_last = golfer_list.findNode(rahm);
+    const std::string name_last = golfer_last->get_data().first_name;
+    Lists::Node<Golfer>* golfer_not_in_list = golfer_list.findNode(woods);
+
+    ASSERT_EQ(first, 2);
+    ASSERT_EQ(middle, 1);
+    ASSERT_EQ(last, 5);
+    ASSERT_EQ(int_not_in_list, nullptr);
+
+    ASSERT_EQ(name_first, "Scottie");
+    ASSERT_EQ(name_middle, "Tommy");
+    ASSERT_EQ(name_last, "John");
+    ASSERT_EQ(golfer_not_in_list, nullptr);
+
+    //Test with empty list
+    Lists::Node<double>* d = empty_list.findNode(5.5);
+    ASSERT_EQ(d, nullptr);
+}
+
+/*
+Test AppendNode method
+Test with an already filled list and an empty list
+Iterate over the list forward and backward to make sure
+both the prev and next links are set correctly
+*/
+TEST_F(LinkedListTest, LinkedListTestAppendNode) {
+
+    //Append to already filled lists
+
+    int_list.appendNode(11);
+
+    const int int_size = int_list.size();
+    ASSERT_EQ(int_size, 4);
+
+    constexpr int int_expected_values[] = {2, 1, 5, 11};
+    const Lists::Node<int>* walker = int_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        int node_data = walker->get_data();
+        ASSERT_EQ(node_data, int_expected_values[i]);
+        walker = walker->get_next();
+    }
+
+    walker = int_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        int node_data = walker->get_data();
+        ASSERT_EQ(node_data, int_expected_values[i]);
+        walker = walker->get_prev();
+    }
+
+    golfer_list.appendNode(woods);
+    const int golfer_size = golfer_list.size();
+    ASSERT_EQ(golfer_size, 4);
+
+    const Golfer golfer_expected_values[] = {sheffler, fleetwood, rahm, woods};
+    const Lists::Node<Golfer>* golf_walker = golfer_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        Golfer node_data = golf_walker->get_data();
+        ASSERT_TRUE(node_data == golfer_expected_values[i]);
+        golf_walker = golf_walker->get_next();
+    }
+
+    golf_walker = golfer_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        Golfer node_data = golf_walker->get_data();
+        ASSERT_TRUE(node_data == golfer_expected_values[i]);
+        golf_walker = golf_walker->get_prev();
+    }
+
+    //Append to empty list
+
+    empty_list.appendNode(6.7);
+    int empty_size = empty_list.size();
+    ASSERT_EQ(empty_size, 1);
+
+    Lists::Node<double>* empty_head = empty_list.get_head();
+    Lists::Node<double>* empty_tail = empty_list.get_tail();
+
+    ASSERT_DOUBLE_EQ(empty_head->get_data(), 6.7);
+    ASSERT_DOUBLE_EQ(empty_tail->get_data(), 6.7);
+    ASSERT_EQ(empty_head->get_next(), nullptr);
+    ASSERT_EQ(empty_head->get_prev(), nullptr);
+}
