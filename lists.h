@@ -135,7 +135,10 @@ namespace Lists {
     std::ostream& operator<<(std::ostream& os, const LinkedList<T>& list) {
         Node<T>* walker = list.get_head();
         while (walker != nullptr) {
-            os << walker->get_data() << ' ';
+            os << walker->get_data();
+            if (walker != list.get_tail()) {
+                os << ' ';
+            }
             walker = walker->get_next();
         }
         return os;

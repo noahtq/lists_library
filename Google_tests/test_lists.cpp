@@ -1,6 +1,7 @@
 //
 // Created by Noah Turnquist on 5/22/24.
 //
+#include <iostream>
 
 #include "gtest/gtest.h"
 #include "../lists.h"
@@ -11,6 +12,12 @@ struct Golfer {
     std::string last_name;
     std::string nationality;
 };
+
+std::ostream& operator<<(std::ostream& os, const Golfer golfer) {
+    os << golfer.ranking << ", " << golfer.first_name << ' '
+    << golfer.last_name << ", " << golfer.nationality << '\n';
+    return os;
+}
 
 bool operator==(const Golfer& a, const Golfer& b) {
     if (a.ranking != b.ranking) return false;
@@ -256,8 +263,21 @@ TEST_F(LinkedListTest, LinkedListTestNodeInListMethod) {
     ASSERT_FALSE(empty_list.nodeInList(d_p));
 }
 
-//Test the insertion operator <<
-//TODO: Write this test
+/*
+Test the insertion operator <<
+*/
+TEST_F(LinkedListTest, LinkedListTestInsertionOperator) {
+    std::ostringstream int_out;
+    int_out << int_list;
+
+    std::ostringstream golfer_out;
+    golfer_out << golfer_list;
+
+    ASSERT_EQ("2 1 5", int_out.str());
+    ASSERT_EQ("1, Scottie Sheffler, American\n"
+              " 11, Tommy Fleetwood, Englist\n"
+              " 3, John Rahm, Spanish\n", golfer_out.str());
+}
 
 /*
 Test find node method - find node by target data
