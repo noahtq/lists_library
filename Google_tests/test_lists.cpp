@@ -360,8 +360,10 @@ TEST_F(LinkedListTest, LinkedListTestAppendNode) {
     ASSERT_EQ(empty_head->get_prev(), nullptr);
 }
 
-//Testing insertNode method - no node parameter just new_data
-//Should behave the same as appendNode
+/*
+Testing insertNode method - no node parameter just new_data
+Should behave the same as appendNode
+*/
 TEST_F(LinkedListTest, LinkedListTestInsertNodeNoNodeParameter) {
     //Insert to already filled lists
 
@@ -419,7 +421,9 @@ TEST_F(LinkedListTest, LinkedListTestInsertNodeNoNodeParameter) {
     ASSERT_EQ(empty_head->get_prev(), nullptr);
 }
 
-//Test insert node method - function overload with prev_node parameter
+/*
+Test insert node method - function overload with prev_node parameter
+*/
 TEST_F(LinkedListTest, LinkedListTestInsertNodePrevNodeParameter) {
     //Should throw exception if list is empty since we know the prev_node
     //can't be found in an empty list
@@ -505,9 +509,11 @@ TEST_F(LinkedListTest, LinkedListTestInsertNodePrevNodeParameter) {
     }
 }
 
-//Test insert node beginning. Should insert a node at the beginning of list
-//Only takes one parameter which is the data to be inserted
-//Should throw error if list is empty and suggest using an append instead.
+/*
+Test insert node beginning. Should insert a node at the beginning of list
+Only takes one parameter which is the data to be inserted
+Should throw error if list is empty and suggest using an append instead.
+*/
 TEST_F(LinkedListTest, LinkedListTestInsertNodeBeginning) {
     //Empty list, should throw out_of_range exception
     ASSERT_THROW(empty_list.insertNodeBeginning(2.75), std::out_of_range);
@@ -541,4 +547,55 @@ TEST_F(LinkedListTest, LinkedListTestInsertNodeBeginning) {
         ASSERT_EQ(golfer_walker->get_data(), golfer_expected_values[i]);
         golfer_walker = golfer_walker->get_prev();
     }
+}
+
+/*
+Test the empty list method
+Should deallocate memory from heap being used for the nodes
+and should reset list to default
+*/
+TEST_F(LinkedListTest, LikedListTestEmptyListMethod) {
+    Lists::Node<int>* int_head = int_list.get_head();
+    Lists::Node<int>* int_tail = int_list.get_tail();
+
+    Lists::Node<Golfer>* golfer_head = golfer_list.get_head();
+    Lists::Node<Golfer>* golfer_tail = golfer_list.get_tail();
+
+    int int_prev_data_head = int_head->get_data();
+    int int_prev_data_tail = int_tail->get_data();
+
+    Golfer golfer_prev_data_head = golfer_head->get_data();
+    Golfer golfer_prev_data_tail = golfer_tail->get_data();
+
+    empty_list.emptyList();
+    int_list.emptyList();
+    golfer_list.emptyList();
+
+    int int_now_data_head = int_head->get_data();
+    int int_now_data_tail = int_tail->get_data();
+
+    Golfer golfer_now_data_head = golfer_head->get_data();
+    Golfer golfer_now_data_tail = golfer_tail->get_data();
+
+    //Check for memory leaks - not the most elegant way of checking for memory
+    //leaks but it's the best solution right now as MacOS doesn't have a lot
+    //of memory leak checking options
+    ASSERT_NE(int_prev_data_head, int_now_data_head);
+    ASSERT_NE(int_prev_data_tail, int_now_data_tail);
+
+    ASSERT_FALSE(golfer_prev_data_head == golfer_now_data_head);
+    ASSERT_FALSE(golfer_prev_data_tail == golfer_now_data_tail);
+
+    //Check that lists were reset
+    ASSERT_EQ(empty_list.get_head(), nullptr);
+    ASSERT_EQ(empty_list.get_tail(), nullptr);
+    ASSERT_EQ(empty_list.size(), 0);
+
+    ASSERT_EQ(int_list.get_head(), nullptr);
+    ASSERT_EQ(int_list.get_tail(), nullptr);
+    ASSERT_EQ(int_list.size(), 0);
+
+    ASSERT_EQ(golfer_list.get_head(), nullptr);
+    ASSERT_EQ(golfer_list.get_tail(), nullptr);
+    ASSERT_EQ(golfer_list.size(), 0);
 }
