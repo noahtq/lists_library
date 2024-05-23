@@ -599,3 +599,64 @@ TEST_F(LinkedListTest, LikedListTestEmptyListMethod) {
     ASSERT_EQ(golfer_list.get_tail(), nullptr);
     ASSERT_EQ(golfer_list.size(), 0);
 }
+
+/*
+Test LinkedList destructor
+Should call emptyList method which will deallocate all of the nodes
+and set the lists back to default. In this instance we care about
+the nodes getting deallocated so we are testing for that.
+In this case to check for memory leaks we create linkedlists in a nested scope
+we have node variables outside of that scope that reference nodes from the
+linked list. We save the data values of these nodes while the list is still in
+scope, once the list goes outside of scope, i.e. the destructor should have
+been called now, we save the values of the data again in seperate variables.
+We then compare the values of the variables with the values from before the
+list was destroyed and after it was destroyed. We expect them to not be equal.
+ */
+TEST_F(LinkedListTest, LinkedListTestDestructor) {
+    Lists::Node<double>* double_head;
+    Lists::Node<double>* double_tail;
+    double double_head_prev;
+    double double_tail_prev;
+
+    Lists::Node<Golfer>* golfer_head;
+    Lists::Node<Golfer>* golfer_tail;
+    Golfer golfer_head_prev;
+    Golfer golfer_tail_prev;
+
+    {
+        Lists::LinkedList<double> double_list_new;
+        double_list_new.appendNode(2.5);
+        double_list_new.appendNode(-100.1);
+        double_list_new.appendNode(20.0);
+
+        double_head = double_list_new.get_head();
+        double_tail = double_list_new.get_tail();
+
+        double_head_prev = double_head->get_data();
+        double_tail_prev = double_tail->get_data();
+
+        Lists::LinkedList<Golfer> golfer_list_new;
+        golfer_list_new.appendNode(sheffler);
+        golfer_list_new.appendNode(fleetwood);
+        golfer_list_new.appendNode(rahm);
+
+        golfer_head = golfer_list_new.get_head();
+        golfer_tail = golfer_list_new.get_tail();
+
+        golfer_head_prev = golfer_head->get_data();
+        golfer_tail_prev = golfer_tail->get_data();
+    }
+
+    double double_head_now = double_head->get_data();
+    double double_tail_now = double_tail->get_data();
+
+    Golfer golfer_head_now = golfer_head->get_data();
+    Golfer golfer_tail_now = golfer_tail->get_data();
+
+    ASSERT_NE(double_head_prev, double_head_now);
+    ASSERT_NE(double_tail_prev, double_tail_now);
+
+    ASSERT_FALSE(golfer_head_prev == golfer_head_now);
+    ASSERT_FALSE(golfer_tail_prev == golfer_tail_now);
+}
