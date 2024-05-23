@@ -168,6 +168,7 @@ namespace Lists {
         sz++;
     }
 
+    //Private helper node
     template<typename T>
     void LinkedList<T>::helperInsert(Node<T>* prev_node, T new_data) {
         if (sz < 1) {

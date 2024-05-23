@@ -359,3 +359,186 @@ TEST_F(LinkedListTest, LinkedListTestAppendNode) {
     ASSERT_EQ(empty_head->get_next(), nullptr);
     ASSERT_EQ(empty_head->get_prev(), nullptr);
 }
+
+//Testing insertNode method - no node parameter just new_data
+//Should behave the same as appendNode
+TEST_F(LinkedListTest, LinkedListTestInsertNodeNoNodeParameter) {
+    //Insert to already filled lists
+
+    int_list.insertNode(11);
+
+    const int int_size = int_list.size();
+    ASSERT_EQ(int_size, 4);
+
+    constexpr int int_expected_values[] = {2, 1, 5, 11};
+    const Lists::Node<int>* walker = int_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        int node_data = walker->get_data();
+        ASSERT_EQ(node_data, int_expected_values[i]);
+        walker = walker->get_next();
+    }
+
+    walker = int_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        int node_data = walker->get_data();
+        ASSERT_EQ(node_data, int_expected_values[i]);
+        walker = walker->get_prev();
+    }
+
+    golfer_list.insertNode(woods);
+    const int golfer_size = golfer_list.size();
+    ASSERT_EQ(golfer_size, 4);
+
+    const Golfer golfer_expected_values[] = {sheffler, fleetwood, rahm, woods};
+    const Lists::Node<Golfer>* golf_walker = golfer_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        Golfer node_data = golf_walker->get_data();
+        ASSERT_TRUE(node_data == golfer_expected_values[i]);
+        golf_walker = golf_walker->get_next();
+    }
+
+    golf_walker = golfer_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        Golfer node_data = golf_walker->get_data();
+        ASSERT_TRUE(node_data == golfer_expected_values[i]);
+        golf_walker = golf_walker->get_prev();
+    }
+
+    //Insert to empty list
+
+    empty_list.insertNode(6.7);
+    int empty_size = empty_list.size();
+    ASSERT_EQ(empty_size, 1);
+
+    Lists::Node<double>* empty_head = empty_list.get_head();
+    Lists::Node<double>* empty_tail = empty_list.get_tail();
+
+    ASSERT_DOUBLE_EQ(empty_head->get_data(), 6.7);
+    ASSERT_DOUBLE_EQ(empty_tail->get_data(), 6.7);
+    ASSERT_EQ(empty_head->get_next(), nullptr);
+    ASSERT_EQ(empty_head->get_prev(), nullptr);
+}
+
+//Test insert node method - function overload with prev_node parameter
+TEST_F(LinkedListTest, LinkedListTestInsertNodePrevNodeParameter) {
+    //Should throw exception if list is empty since we know the prev_node
+    //can't be found in an empty list
+    Lists::Node prev_double(5.5);
+    Lists::Node<double>* prev_double_p = &prev_double;
+    ASSERT_THROW(empty_list.insertNode(prev_double_p, 21.1), std::out_of_range);
+
+    //Should throw out_of_range error if the previous node is not in list
+    //This is on a list with some nodes already
+    Lists::Node prev_int(18);
+    Lists::Node<int>* prev_int_p = &prev_int;
+    Lists::Node prev_golfer(woods);
+    Lists::Node<Golfer>* prev_golfer_p = &prev_golfer;
+
+    ASSERT_THROW(int_list.insertNode(prev_int_p, 27), std::out_of_range);
+    ASSERT_THROW(golfer_list.insertNode(prev_golfer_p, sheffler), std::out_of_range);
+
+    //Test inserting at end of list - again iterating over each list
+    //forward and backward to make sure all links were setup correctly
+    Lists::Node<int>* real_prev_int = int_list.findNode(5);
+    Lists::Node<Golfer>* real_prev_golfer = golfer_list.findNode(rahm);
+
+    int_list.insertNode(real_prev_int, 17);
+    golfer_list.insertNode(real_prev_golfer, woods);
+
+    int int_expected_values[] = {2, 1, 5, 17};
+    Lists::Node<int>* int_walker = int_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(int_walker->get_data(), int_expected_values[i]);
+        int_walker = int_walker->get_next();
+    }
+
+    int_walker = int_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        ASSERT_EQ(int_walker->get_data(), int_expected_values[i]);
+        int_walker = int_walker->get_prev();
+    }
+
+    Golfer golfer_expected_values[] = {sheffler, fleetwood, rahm, woods};
+    Lists::Node<Golfer>* golfer_walker = golfer_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        ASSERT_TRUE(golfer_walker->get_data() == golfer_expected_values[i]);
+        golfer_walker = golfer_walker->get_next();
+    }
+
+    golfer_walker = golfer_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        ASSERT_EQ(golfer_walker->get_data(), golfer_expected_values[i]);
+        golfer_walker = golfer_walker->get_prev();
+    }
+
+    //Inserting into middle of list
+    Lists::Node<int>* middle_int_node = int_list.findNode(1);
+    Lists::Node<Golfer>* middle_golfer_node = golfer_list.findNode(fleetwood);
+
+    int_list.insertNode(middle_int_node, -5);
+    golfer_list.insertNode(middle_golfer_node, sheffler);
+
+    int int_expected_values_middle[] = {2, 1, -5, 5, 17};
+    int_walker = int_list.get_head();
+    for (int i = 0; i < 5; i++) {
+        ASSERT_EQ(int_walker->get_data(), int_expected_values_middle[i]);
+        int_walker = int_walker->get_next();
+    }
+
+    int_walker = int_list.get_tail();
+    for (int i = 4; i >= 0; i--) {
+        ASSERT_EQ(int_walker->get_data(), int_expected_values_middle[i]);
+        int_walker = int_walker->get_prev();
+    }
+
+    Golfer golfer_expected_values_middle[] = {sheffler, fleetwood, sheffler, rahm, woods};
+    golfer_walker = golfer_list.get_head();
+    for (int i = 0; i < 5; i++) {
+        ASSERT_TRUE(golfer_walker->get_data() == golfer_expected_values_middle[i]);
+        golfer_walker = golfer_walker->get_next();
+    }
+
+    golfer_walker = golfer_list.get_tail();
+    for (int i = 4; i >= 0; i--) {
+        ASSERT_EQ(golfer_walker->get_data(), golfer_expected_values_middle[i]);
+        golfer_walker = golfer_walker->get_prev();
+    }
+}
+
+//Test insert node beginning. Should insert a node at the beginning of list
+//Only takes one parameter which is the data to be inserted
+//Should throw error if list is empty and suggest using an append instead.
+TEST_F(LinkedListTest, LinkedListTestInsertNodeBeginning) {
+    //Empty list, should throw out_of_range exception
+    ASSERT_THROW(empty_list.insertNodeBeginning(2.75), std::out_of_range);
+
+    //Test with already filled lists
+    int_list.insertNodeBeginning(10);
+    golfer_list.insertNodeBeginning(woods);
+
+    int int_expected_values[] = {10, 2, 1, 5};
+    Lists::Node<int>* int_walker = int_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        ASSERT_EQ(int_walker->get_data(), int_expected_values[i]);
+        int_walker = int_walker->get_next();
+    }
+
+    int_walker = int_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        ASSERT_EQ(int_walker->get_data(), int_expected_values[i]);
+        int_walker = int_walker->get_prev();
+    }
+
+    Golfer golfer_expected_values[] = {woods, sheffler, fleetwood, rahm};
+    Lists::Node<Golfer>* golfer_walker = golfer_list.get_head();
+    for (int i = 0; i < 4; i++) {
+        ASSERT_TRUE(golfer_walker->get_data() == golfer_expected_values[i]);
+        golfer_walker = golfer_walker->get_next();
+    }
+
+    golfer_walker = golfer_list.get_tail();
+    for (int i = 3; i >= 0; i--) {
+        ASSERT_EQ(golfer_walker->get_data(), golfer_expected_values[i]);
+        golfer_walker = golfer_walker->get_prev();
+    }
+}
